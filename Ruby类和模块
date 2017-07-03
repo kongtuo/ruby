@@ -1,0 +1,519 @@
+类
+
+	一、类表示对象的种类，每个对象都一定属于某个类
+
+		1、生成新的对象时，一般用到各个类的new方法
+
+			示例：
+				> ary = Array.new
+				#   => []
+				> p ary
+				#   []
+				#   => []
+
+		2、查看某个对象属于那个类，可以使用class方法
+
+			示例：
+				> ary = []
+				#   => []
+				> str = "Hello World."
+				#   => "Hello World."
+				> p ary.class
+				#   Array
+				#   => Array
+				> p str.class
+				#   String
+				#   => String
+
+		3、当判断某个对象是否属于某个类时，可以使用instance_of?
+
+			示例：
+				> ary = []
+				#   => []
+				> str = "Hello World."
+				#   => "Hello World."
+				> p ary.instance_of?(Array)
+				#   true
+				#   => true
+				> p ary.instance_of?(String)
+				#   false
+				#   => false
+				> p str.instance_of?(String)
+				#   true
+				#   => true
+				> p str.instance_of?(Array)
+				#   false
+				#   => false
+
+		通过已定义的类来创建新类称为继承
+		继承后创建的新类称为子类（subclass），被继承的类称为父类（superclass）
+		通过继承可以实现：
+			在不影响原有功能的前提下追加功能
+			重定义原有功能，使名称相同的方法产生不同的效果
+			在已有功能的基础上追加处理，扩展已有功能
+
+		BasicObject类是Ruby中所有类的父类，它定义了作为Ruby对象的最基本功能
+			BasicObject类是最基础的类，甚至连一般对象需要的功能都没有定义，因此普通对象所需要的类一般都被定义为Object类
+
+			BasicObject
+				Object
+					Array--[1,"hi"]
+					String--"hi"
+					Hash--[]
+					Regexp
+					IO
+						File
+					Dir
+					Numeric
+						Integer--5
+							Fixnum
+							Bignum
+						Float--3.14
+						Complex
+						Rational
+					Exception
+					Time
+					Defined
+				示例：
+					HelloWorld--test1
+
+			子类与父类的关系称为"is-a 关系"
+
+				示例：
+					> str = "Hello World."
+					#   => "Hello World."
+					> p str.is_a?(String)
+					#   true
+					#   => true
+					> p str.is_a?(Object)
+					#   true
+					#   => true
+
+
+	二、类的创建：
+		$ vim hello_class.rb
+		#   class HelloWorld
+		#       def initialize(myname = "Ruby")
+		#           @name = myname
+		#       end
+		#   
+		#   	def print_name				# 方法中定义显示的变量
+		#   		p @name
+		#   	end
+		#   end
+		#   
+		#   test1 = HelloWorld.new("Bob")
+		#   test2 = HelloWorld.new("Alice")
+		#   test3 = HelloWorld.new
+		#   
+		#   test1.print_name
+		#   test2.print_name
+		#   test3.print_name
+
+		$ ruby hello_class.rb
+		#   "Bob"
+		#   "Alice"
+		#   "Ruby"
+
+		存取器：	#   def HelloWorld.hello(name)
+					#   puts "#{name} said hello."
+					#   end
+					#   Hell
+			从对象外部不能直接访问实例变量或对示例变量赋值，需要通过方法来访问对象的内部
+
+				示例：不使用存取器
+					$ vim hello_class.rb
+					#   class HelloWorld
+					#       def initialize(myname = "Ruby")
+					#           @name = myname
+					#       end
+					#
+					#   	def var_name 		# 方法中未定义显示的变量
+					#   		@name
+					#   	end
+					#
+					#   	def set_name=(value)
+					#   		@name = value
+					#   	end
+					#   end
+					#   
+					#   test = HelloWorld.new("Bob")
+					#   p test.var_name
+					#
+					#   test.set_name = "Alice"
+					#   p test.var_name
+
+					$ ruby hello_class.rb
+					#   "Bob"
+					#   "Alice"
+
+			存取器的定义：方法名与变量名相同
+				attr_reader :name			# 只读
+				attr_writee :name 			# 只写
+				attr_accessor :name			# 读写
+
+				示例：使用存取器
+					$ vim hello_class.rb
+					#   class HelloWorld
+					#       def initialize(myname = "Ruby")
+					#           @name = myname
+					#       end
+					#
+					#   	attr_accessor :name 	# 定义name方法
+					#
+					#   end
+					#
+					#   test = HelloWorld.new("Bob")
+					#   p test.name
+					#
+					#   test.name = "Alice"
+					#   p test.name
+
+					$ ruby hello_class.rb
+					#   "Bob"
+					#   "Alice"
+
+		特殊变量self：
+			在实例变量中，可以使用self这个特殊变量引用方法的接收者，仅能用于方法中
+
+				示例：
+					$ vim hello_class.rb
+					#   class HelloWorld
+					#       def initialize(myname = "Ruby")
+					#           @name = myname
+					#       end
+					#
+					#   	attr_accessor :name
+					#
+					#       def print_method 	# 方法中定义显示的方法
+					#           p self.name
+					#       end
+					#
+					#   end
+					#
+					#   test = HelloWorld.new("Bob")
+					#   test.print_method
+					#
+					#   test.name = "Alice"
+					#   test.print_method
+
+					$ ruby hello_class.rb
+					#   "Bob"
+					#   "Alice"
+
+			调用方法时，如果省略了接收者，Ruby默认会把self作为该方法的接收者
+
+				示例：
+					$ vim hello_class.rb
+					#   class HelloWorld
+					#       def initialize(myname = "Ruby")
+					#           @name = myname
+					#       end
+					#
+					#   	attr_accessor :name
+					#
+					#       def print_method
+					#           p name 		# 方法中定义显示的方法
+					#       end
+					#
+					#   end
+					#
+					#   test = HelloWorld.new("Bob")
+					#   test.print_method
+					#
+					#   test.name = "Alice"
+					#   test.print_method
+
+					$ ruby hello_class.rb
+					#   "Bob"
+					#   "Alice"
+
+			方法内部再次赋值局部变量时，要使用self变量
+
+
+
+
+
+
+
+
+		类方法
+			方法的接收者就是类本身（类对象）的方法称为类方法，类方法的操作对象不是实例，而是类本身。
+
+			（1）class << 类名 ~ end  这种写法的类定义称为单例类定义，单例类定义中定义的方法称为单例方法。
+
+				示例1：
+					$ vim hello_class.rb
+					#   class HelloWorld end
+					#
+					#   class << HelloWorld
+					#   	def hello(name)
+					#   		puts "#{name} said hello."
+					#   	end
+					#   end
+					#
+					#   HelloWorld.hello("John")
+
+					$ ruby hello_class.rb
+					#   John said hello.
+
+				示例2.1：
+					$ vim hello_class.rb
+					#   class HelloWorld
+					#   	class << HelloWorld
+					#   		def hello(name)
+					#   			puts "#{name} said hello."
+					#   		end
+					#   	end
+					#   end
+					#
+					#   HelloWorld.hello("John")
+
+					$ ruby hello_class.rb
+					#   John said hello.
+
+				示例2.2：
+					$ vim hello_class.rb
+					#   class HelloWorld
+					#   	class << self
+					#   		def hello(name)
+					#   			puts "#{name} said hello."
+					#   		end
+					#   	end
+					#   end
+					#
+					#   HelloWorld.hello("John")
+
+					$ ruby hello_class.rb
+					#   John said hello.
+
+
+				通过利用单例类定义，就可以给对象添加方法（单例方法）。单例类定义被用于定义对象的专属实例方法。
+				Ruby 中所有的类都是 Class 类的实例，对 Class 类添加实例方法，就等于给所有的类都添加了该类方法。因此，只希望对某个实例添加方法时，就需要利用单例方法。
+
+					#   str1 = "Ruby"
+					#   str2 = "Ruby"
+					#   
+					#   class << str1
+					#   	def hello
+					#   		"Hello, #{self}!"
+					#   	end
+					#   end
+					#   
+					#   p str1.hello #=> "Hello, Ruby!"
+					#   p str2.hello #=> 错误（NoMethodError）
+
+
+			（2）def 类 . 方法名 ~ end
+
+				示例1：
+					$ vim hello_class.rb
+					#   class HelloWorld end
+					#
+					#   def HelloWorld.hello(name)
+					#   	puts "#{name} said hello."
+					#   end
+					#
+					#   HelloWorld.hello("John")
+
+					$ ruby hello_class.rb
+					#   John said hello.
+
+				示例2.1：
+					$ vim hello_class.rb
+					#   class HelloWorld
+					#   	def HelloWorld.hello(name)
+					#   		puts "#{name} said hello."
+					#   	end
+					#   end
+					#
+					#   HelloWorld.hello("John")
+
+					$ ruby hello_class.rb
+					#   John said hello.
+
+				示例2.2：
+					$ vim hello_class.rb
+					#   class HelloWorld
+					#   	def self.hello(name)
+					#   		puts "#{name} said hello."
+					#   	end
+					#   end
+
+					$ ruby hello_class.rb
+					#   John said hello.
+
+
+		常量
+			在 class 上下文中可以定义常量。
+
+			示例：
+				#   class HelloWorld
+				#   	Version = "1.0"
+				#   end
+				#
+				#   p HelloWorld::Version
+
+
+		变量
+			以 @@ 开头的变量称为类变量。类变量是该类所有实例的共享变量，这一点与常量类似，不同的是我们可以多次修改类变量的值。另外，与实例变量一样，从类的外部访问类变量时也需要存取器。不过，由于 attr_accessor 等存取器都不能使用，因此需要直接定义。代码清单 8.4 的程序在代码清单 8.1 的HelloWorld 类的基础上，添加了统计 hello 方法被调用次数的功能。
+
+			示例：
+				$ vim hello_count.rb
+				#   class HelloCount
+				#   	@@count = 0 									# 调用hello 方法的次数
+				#
+				#   	def HelloCount.count 							# 读取调用次数的类方法
+				#   		@@count
+				#   	end
+				#
+				#   	def initialize(myname="Ruby")
+				#   		@name = myname
+				#   	end
+				#   
+				#   	def hello
+				#   		@@count += 1 								# 累加调用次数
+				#   		puts "Hello, world. I am #{@name}.\n"
+				#   	end
+				#   end
+				#
+				#   bob = HelloCount.new("Bob")
+				#   alice = HelloCount.new("Alice")
+				#   ruby = HelloCount.new
+				#   p HelloCount.count #=> 0
+				#
+				#   bob.hello
+				#   alice.hello
+				#   ruby.hello
+				#   p HelloCount.count #=> 3
+
+
+		限制方法的调用
+
+			Ruby 提供了 3 种方法的访问级别
+				public……以实例方法的形式向外部公开该方法
+				private……在指定接收者的情况下不能调用该方法（只能使用缺省接收者的方式调用该方法，因此无法从实例的外部访问）
+				protected……在同一个类（及其子类）中可作为实例方法使用，而在除此以外的地方则无法使用
+
+			没有指定访问级别的方法默认为 public，但 initialize 方法是个例外，它通常会被定义为 private 
+				示例：
+					$ vim acc_test.rb
+					#   class AccTest
+					#   	def pub
+					#   		puts "pub is a public method."
+					#   	end
+					#   	public :pub 						# 把pub 方法设定为public（可省略）
+					#   
+		   			#   	def priv
+		   			#   		puts "priv is a private method."
+		   			#   	end
+		   			#   	private :priv 						# 把priv 方法设定为private
+		   			#   end
+		   			#
+		   			#   acc = AccTest.new
+		   			#   acc.pub
+					#   acc.priv
+
+
+			希望统一定义多个方法的访问级别时，可以使用下面的语法 :
+
+					#   class AccTest
+					#		public 								# 不指定参数时，以下的方法都被定义为public
+					#		def pub
+					#			puts "pub is a public method."
+					#		end
+					#
+					#   	private 							# 以下的方法都被定义为private
+					#   	def priv
+					#   		puts "priv is a private method."
+					#   	end
+					#   end
+
+
+
+	三、扩展类
+
+		在原有类的基础上添加方法
+
+			$ vim ext_string.rb
+			#   class String
+			#   	def count_word
+			#   		ary = self.split(/\s+/) 	# 用空格分割接收者
+			#   		return ary.size 			# 返回分割后的数组的元素总数
+			#   	end
+			#   end
+			#   
+			#   str = "Just Another Ruby Newbie"
+			#   p str.count_word #=> 4
+
+		继承:在不对已有的类进行修改的前提下，通过增加新功能或重定义已有功能等手段来创建新的类。
+
+			class 类名 < 父类名
+				类定义
+			end
+
+		创建一个继承了 Array 类的 RingArray 类。RingArray 类只是重定义了读取数组内容时使用的 [] 运算符。该程序通过 super 关键字调用父类中同名的方法（在本例中也就是 Array#[]）。
+
+			$ vim ring_array.rb
+			#   class RingArray < Array 			# 指定父类
+			#   	def [](i) 						# 重定义运算符[]
+			#   		idx = i % size 				# 计算新索引值
+			#   		super(idx) 					# 调用父类中同名的方法
+			#   	end
+			#   end
+			#   
+			#   wday = RingArray["日", "月", "火", "水", "木", "金", "土"]
+			#   p wday[6] #=> "土"
+			#   p wday[11] #=> "木"
+			#   p wday[15] #=> "月"
+			#   p wday[-1] #=> "土"
+
+
+	利用继承，我们可以把共同的功能定义在父类，把各自独有的功能定义在子类。
+	定义类时没有指定父类的情况下，Ruby 会默认该类为 Object 类的子类。
+	Object 类提供了许多便于实际编程的方法。但在某些情况下，我们也有可能会希望使用更轻量级的类，而这时就可以使用 BasicObject 类。
+		定义 BasicObject 的子类时，与 Object 类不同，需要明确指定 BasicObject 类为父类
+		class MySimpleClass < BasicObject
+			┊
+		end
+
+	BasicObject 类只提供了组成 Ruby 对象所需的最低限度的方法。类对象调用 instance_methods 方法后，就会以符号的形式返回该类的实例方法列表。
+
+
+	>> Object.instance_methods
+	=> [:nil?, :===, :=~, :!~, :eql?, :hash, :<=>, :class, :singleton_class, :clone,:dup, :taint, :tainted?, :untaint, :untrust, :untrusted?, :trust, :freeze,:frozen?, :to_s, ...... 等众多方法名......]
+	>> BasicObject.instance_methods
+	=> [:==, :equal?, :!, :!=, :instance_eval, :instance_exec, :__send__, :__id__]
+
+
+
+
+
+
+	alias：给已经存在的方法设置别名
+		alias 别名 原名 			# 直接使用方法名
+		alias : 别名 : 原名 		# 使用符号名
+
+		示例：
+			#   class C1 							# 定义C1
+			#   	def hello 						# 定义hello
+			#   		"Hello"
+			#   	end
+			#   end
+			#   
+			#   class C2 < C1 						# 定义继承了C1 的子类C2
+			#   	alias old_hello hello 			# 设定别名old_hello
+			#   	def hello 						# 重定义hello
+			#   		"#{old_hello}, again"
+			#   	end
+			#   end
+			#   
+			#   obj = C2.new
+			#   p obj.old_hello 	#=> "Hello"
+			#   p obj.hello 		#=> "Hello, again
+
+
+	undef：删除已有方法的定义
+		undef 方法名 				# 直接使用方法名
+		undef : 方法名 			# 使用符号名
+

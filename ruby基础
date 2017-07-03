@@ -1,0 +1,741 @@
+对象：
+	字符串：表示文字的对象
+		"hello world"
+		"100"
+	符号：表示用于识别方法等名称的标签的对象
+		:foo
+		:"foo"
+	数值：表示数字的对象
+		整数：
+			100
+		浮点数：
+			3.14
+		矩阵：
+		复数：
+		素数：
+		公式：
+	数组：表示多个数据集合的对象
+		["hello world", "100", 100]
+	散列：表示多个数据集合的对象
+		{:name => kongtuo, :age => 24}
+	正则表达式：表示匹配模式的对象
+	时间：表示时间的对象
+	文件：表示对文件进行读写操作的对象
+	范围：
+	异常：
+
+	对象的同一性：
+		所有的对象都有标识和值
+		标识（ID）用来表示对象同一性，Ruby中所有的对象都是唯一的，对象的 ID 可以通过 object_id（或者__id__）方法取得
+
+		示例1：
+			> ary1 = []
+			##  => []
+			> ary2 = []
+			##  => []
+			> p ary1.object_id
+			##  47318167258780
+			##  => 47318167258780
+			> p ary2.object_id
+			##  47318167179780
+			##  => 47318167179780
+
+		示例2：
+			我们用 equal? 方法判断两个对象的是否为同一个对象
+
+			> str1 = "foo"
+			##  => "foo"
+			> str2 = str1
+			##  => "foo"
+			> str3 = "f" + "o" + "o"
+			##  => "foo"
+			> p str1.equal?(str2)
+			##  true
+			##  => true
+			> p str1.equal?(str3)
+			##  false
+			##  => false
+
+		示例3：
+			对象的“值”就是对象拥有者的信息
+
+			> str1 = "foo"
+			##  => "foo"
+			> str2 = "f" + "o" + "o"
+			##  => "foo"
+			> p str1 == str2
+			##  true
+			##  => true
+			> p str1.eql?(str2)
+			##  true
+			##  => true
+
+
+			eql?也可用来判断对象的值是否相等
+			== 与 eql? 大部分情况下的执行结果都是一样的；数值类会重定义 eql? 方法
+
+			> p 1.0 == 1
+			##  true
+			##  => true
+			> p 1.0.eql?(1)
+			##  false
+			##  => false
+
+
+
+类：表示对象的种类
+	对象拥有什么特性等，都是由类来决定的
+
+	对象类型					  类
+	  数值 					Numeric
+	  字符串 				String
+	  数组 					Array
+	  散列 					Hash
+	  正则 					Regexp
+	  文件 					File
+	  符号 					Symbol
+
+
+print
+
+	> print("Hello, Ruby!")
+	##  Hello, Ruby!=> nil
+	> print "Hello, Ruby!"
+	## Hello, Ruby!=> nil
+
+	> print "Hello, Ruby!\n"
+	##  Hello, Ruby!
+	##  => nil
+	# \n 用于换行
+
+	> print "Hello, ", "Ruby", "!", "\n"
+	##  Hello, Ruby!
+	##  => nil
+	# 调用方法时，()可省略
+
+	> print "Hello,
+	  Ruby
+	  !
+	  "
+	##  Hello,
+	##  Ruby
+	##  !
+	##  => nil
+	# 换行方式一：不常用
+
+	> print "Hello,\nRuby\n!\n"
+	##  Hello,
+	##  Ruby
+	##  !
+	##  => nil
+	# 换行方式二：较常用
+
+	> print "Hello,\n", "Ruby\n", "!\n"
+	##  Hello,
+	##  Ruby
+	##  !
+	##  => nil
+	# 换行方式三：不常用
+
+	> print 'Hello,\nRuby\n!\n'
+	##  Hello,\nRuby\n!\n=> nil
+	# 单引号中的内容无特殊含义直接输出
+
+	> print "Hello, Ruby!\\n"
+	##  Hello, Ruby!\n=> nil
+	# \用于转义特殊符号
+
+	> print "Hello, "Ruby"!\n"
+	##  SyntaxError: (irb):19: syntax error, unexpected tCONSTANT, expecting ')'
+	##  print "Hello, "Ruby"!\n"
+	                   ^
+	print "Hello, "Ruby"!\n"
+	##  SyntaxError: (irb):19: syntax error, unexpected tCONSTANT, expecting ')'
+	##  print("Hello, "Ruby"!\n")
+	                   ^
+	> print "Hello, \"Ruby\"!\n"
+	##  Hello, "Ruby"!
+	##  => nil
+	irb(main):021:0> print('Hello, \'Ruby\'!\n')
+	##  Hello, 'Ruby'!\n=> nil
+	# 相同引号之间不可嵌套，需使用\转义
+
+
+puts
+
+	> puts("Hello, Ruby!")
+	##  Hello, Ruby!
+	##  => nil
+	> puts "Hello, Ruby!"
+	##  Hello, Ruby!
+	##  => nil
+	# 自动在结尾处加换行符，其他使用方法与print相同
+
+p
+
+	irb(main):001:0> p("100")
+	##  "100"
+	##  => "100"
+	> p "100"
+	##  "100"
+	##  => "100"
+
+	> p(100)
+	##  100
+	##  => 100
+	> p 100
+	##  100
+	##  => 100
+	# 对字符串和数值输出不同的形式
+
+中文输出
+
+	> print "话说某个朝代，后宫妃嫔甚多，\n"
+	##  话说某个朝代，后宫妃嫔甚多，
+	##  => nil
+	> print "其中有一宫女，出身并不十分高贵，却蒙圣恩宠爱。\n"
+	##  其中有一宫女，出身并不十分高贵，却蒙圣恩宠爱。
+	##  => nil
+	# ruby程序的编码方式：
+		1、在程序文件的首行添加注释："# encoding: 编码方式"
+		2、运行程序文件时指定：ruby -E UTF-8 example.rb
+		3、运行irb时指定：irb -E UTF-8
+
+
+数值：
+	整数(Fixnum)
+	浮点数(float)
+
+		> p "100"
+		##  "100"
+		##  => "100"
+		# 字符串对象
+
+		> p 100
+		##  100
+		##  => 100
+		# 整数对象
+
+		p 3.14
+		##  3.14
+		##  => 3.14
+		# 浮点数对象
+
+数值运算：
+	+， -， *， /
+
+		> 1 + 1
+		##  => 2
+		> 2 - 3
+		##  => -1
+		> 5 * 10
+		##  => 50
+		> 100 / 4
+		##  => 25
+		> 20 + 8 / 2
+		##  => 24
+		> (20 + 8) / 2
+		##  => 14
+	+=, -=
+
+	function
+		sin， sqrt
+
+		> Math.sin(3.1415)
+		##  => 9.265358966049026e-05
+		> Math.sqrt(10000)
+		##  => 100.0
+
+变量：
+
+	变量类型：
+		局部变量(loal variable)
+			以英文字母或者"_"开头
+			所谓局部，即变量在程序中的有效范围（也称为变量的作用域）是局部的。
+			也就是说，在程序某个地方声明的变量名，在其他地方也可以使用，程序会也会认为这两个变量是没有关系的。
+
+		全局变量(global variable)
+			以"$"开头
+			与局部变量相对,只要全局变量的名称相同，不管变量在程序的哪个部分使用，程序就认为是它们是同一个变量。
+			当引用的变量与被引用的变量均有相同的全局变量时，两变量在各自设定的程序段生效
+			示例：
+				$ vim sub.rb
+					$x = 1 ## 对全局变量赋值
+					x = 1  ## 对局部变量赋值
+
+				$ vim test.rb
+					$x = 0
+					x = 0
+
+					p $x
+					p x
+
+					require "./sub"
+
+					p $x
+					p x
+
+
+				➜  ~ ruby test.rb 
+				##  0
+				##  0
+				##  1
+				##  0
+
+		实例变量(instance variable)
+			以"@"开头
+		类变量(class variable)
+			以"@@"开头
+		伪变量(pseudo variable)
+		预定义变量(pre-defined variable)
+
+	变量赋值和替换：
+		variable = value
+
+		> name = "ruby"
+		##  => "ruby"
+
+	变量引用：
+		puts variable
+
+		> puts name
+		##  ruby
+		##  => nil
+
+		> print "name is ", name, "\n"
+		## 　name is ruby
+		## 　=> nil
+		# 引用变量时不能使用引号
+
+		> puts "name is #{name}"
+		##  name is ruby
+		##  => nil
+		# 使用#{}符号引用变量时，可将变量放入引号内
+
+
+	示例1：
+		计算长方体的表面积和体积
+
+		$ vim cal_cuboid.rb
+			x = 10
+			y = 20
+			z = 30
+
+			area = (x*y + y*z + z*x) * 2
+			volume = x * y * z
+
+			puts "表面积 = #{area}"
+			puts "体积 = #{volume}"
+
+		➜  ~ ruby cal_cuboid.rb
+		##  表面积 = 2200
+		##  体积 = 6000
+
+多重赋值：
+	建议对彼此相关变量进行多重赋值
+
+	示例1：变量数量等于对象数量
+		> a, b, c = 1, 2, 3
+		##  => [1, 2, 3]
+		> p [a, b, c]
+		##  [1, 2, 3]
+		##  => [1, 2, 3]
+
+	示例2：变量数量大于对象数量
+		> a, b, c, d = 1, 2, 3
+		##  => [1, 2, 3]
+		> p [a, b, c, d]
+		##  [1, 2, 3, nil]
+		##  => [1, 2, 3, nil]
+
+	示例3：变量数量小于对象数量
+		> a, b, c = 1, 2, 3, 4
+		##  => [1, 2, 3, 4]
+		> p [a, b, c]
+		##  [1, 2, 3]
+		##  => [1, 2, 3]
+
+		> a, b, *c = 1, 2, 3, 4, 5, 6
+		##  => [1, 2, 3, 4, 5, 6]
+		> p [a, b, c]
+		##  [1, 2, [3, 4, 5, 6]]
+		##  => [1, 2, [3, 4, 5, 6]]
+
+		a, *b, c = 1, 2, 3, 4, 5, 6
+		##  => [1, 2, 3, 4, 5, 6]
+		> p [a, b, c]
+		##  [1, [2, 3, 4, 5], 6]
+		##  => [1, [2, 3, 4, 5], 6]
+
+		> *a, b, c = 1, 2, 3, 4, 5, 6
+		##  => [1, 2, 3, 4, 5, 6]
+		> p [a, b, c]
+		##  [[1, 2, 3, 4], 5, 6]
+		##  => [[1, 2, 3, 4], 5, 6]
+
+置换变量的值：
+	将两变量的值交换
+
+	示例：
+		> a, b = 1, 2
+		##  => [1, 2]
+		> a, b = b, a
+		##  => [2, 1]
+		> p [a, b]
+		##  [2, 1]
+		##  => [2, 1]
+
+获取数组的元素
+	
+	示例1：
+		> ary = [1, 2]
+		##  => [1, 2]
+		> a, b = ary
+		##  => [1, 2]
+		> p [a, b]
+		##  [1, 2]
+		##  => [1, 2]
+
+	示例2：
+		> ary = [1, 2]
+		##  => [1, 2]
+		irb(main):002:0> a, = ary
+		##  => [1, 2]
+		irb(main):003:0> p a
+		##  1
+		##  => 1
+
+获取嵌套数组的元素：
+	
+	示例1：
+		> ary = [1, [2, 3], 4]
+		##  => [1, [2, 3], 4]
+		> a, b, c = ary
+		##  => [1, [2, 3], 4]
+		> p [a, b, c]
+		##  [1, [2, 3], 4]
+		##  => [1, [2, 3], 4]
+
+	示例2：
+		> ary = [1, [2, 3], 4]
+		##  => [1, [2, 3], 4]
+		> a, (b1, b2), c = ary
+		##  => [1, [2, 3], 4]
+		> p [a, b1, b2, c]
+		##  [1, 2, 3, 4]
+		##  => [1, 2, 3, 4]
+
+
+
+
+常量：
+	以大写英文字母开头，对已经赋值的常量再次赋值时将会警告
+
+	示例：
+		> TEST = 1
+		##  => 1
+		> TEST =2
+		##  warning: already initialized constant TEST
+		##  warning: previous definition of TEST was here
+		##  => 2
+		> TEST
+		##  => 2
+
+保留字：
+	使用Ruby的保留字将会提示语法错误
+
+	\_\_LINE\_\_ 	\_\_ENCODING\_\_ 	\_\_FILE\_\_ 	BEGIN 	END
+	    alias 			and 				begin 		break 	case
+		class 			def 				defined? 	do 		else
+		elsif 			end 				ensure 		false 	for
+		if 				in 					module 		next 	nil
+		not 			or 					redo 		rescue 	retry
+		return 			self 				super 		then 	true
+		undef 			unless 				until 		when 	while
+		yield
+
+	示例：
+		> end = 1
+		##  SyntaxError: (irb):4: syntax error, unexpected keyword_end
+		##  end = 1
+		##     ^
+
+
+注释：
+	单行注释：
+		#注释内容
+	多行注释
+		=begin
+		注释内容
+		=end
+
+比较操作符：
+	==, !=, <, >, <=, >=
+逻辑运算符：
+	&&, ||, !, and, or, not
+
+
+数据结构：用于保存对象的对象称为容器
+	数组(Array)：
+		创建空数组：
+			> arr = []
+			##  => []
+		创建数组：
+			> arr = ["hello world", "100", 100]
+			##  => ["hello world", "100", 100]
+		查看所有元素：
+			> arr
+			##  => ["hello world", "100", 100]
+		使用索引查看数组中的指定索引的元素：
+			> arr[0]
+			##　　=> "hello world"
+			> arr[1]
+			##　　=> "100"
+			> arr[2]
+			##　　=> 100
+			> arr[-1]
+			##　　=> 100
+			> arr[-2]
+			##　　=> "100"
+			> arr[-3]
+			##　　=> "hello world"
+		修改数组中指定索引的元素：
+			> arr[0] = "HELLO WORLD"
+			##  => "HELLO WORLD"
+			> arr[0]
+			##  => "HELLO WORLD"
+		计算数组的大小：
+			> arr.size
+			##  => 3
+		数组的循环：
+			数组.each do |变量|
+				希望循环的处理
+			end
+
+			示例：
+				> arr.each do |n|
+				  p n
+				  end
+				##  "HELLO WORLD"
+				##  "100"
+				##  100
+				##  => ["HELLO WORLD", "100", 100]
+
+	散列(hash)：键值对(key-value pair)的集合，一般以字符串或符号作为键
+		创建空散列：
+			> hash = {}
+			##  => {}
+		创建散列：
+			使用符号：
+				> hash = {:name => "kongtuo", :age => 24}
+				##  => {:name=>"kongtuo", :age=>24}
+			使用字符串：
+				> hash = {name: "kongtuo", age: 24}
+				##  => {:name=>"kongtuo", :age=>24}
+			# 除创建散列外，其余没什么不同之处
+		查看所有键值对：
+			> hash
+			##  => {:name=>"kongtuo", :age=>24}
+		使用键查看散列中的指定键的值：
+			> hash[:name]
+			##  => "kongtuo"
+			> hash[:age]
+			##  => 24
+		修改散列中指定键的值：
+			> hash[:name] = "KONGTUO"
+			##  => "KONGTUO"
+			> hash[:name]
+			##  => "KONGTUO"
+		散列的循环：
+			散列.each do |键变量, 值变量|
+				希望循环的处理
+			end
+
+			示例：
+				> hash.each do |key, value|
+				  p "#{key}, #{value}"
+				  end
+				##  "name, KONGTUO"
+				##  "age, 24"
+				##  => {:name=>"KONGTUO", :age=>24}
+
+正则表达式：
+	/模式/ =~ ""
+
+	> /Ruby/ =~ "Ruby"
+	##  => 0
+	# 0表示可以匹配到
+
+	> /Ruby/ =~ "ruby"
+	##  => nil
+	# nil表示对象不存在，方法不能返回有意义的值时就会返回nil
+	# 从数组或散列里获取对象时，若指定的索引或键不存在也会返回nil
+
+	> /Ruby/i =~ "ruby"
+	##  => 0
+	# i表示不区分大小写匹配
+
+
+向程序中传递参数：
+	使用ARGV这个预定义的数组来获取命令行传递过来的数据
+	数组ARGV中的元素，就是在命令行中指定的脚本字符串参数
+	在命令行中指定多个脚本参数时，各参数之间用空格间隔
+
+	示例1：
+		$ vim print_argv.rb
+			puts "第 1 个参数：#{ARGV[0]}"
+			puts "第 2 个参数：#{ARGV[1]}"
+			puts "第 3 个参数：#{ARGV[2]}"
+
+		➜  ~ ruby print_argv.rb 1st 2nd 3rd
+		##  第 1 个参数：1st
+		##  第 2 个参数：2nd
+		##  第 3 个参数：3rd
+
+	示例2：
+		$ vim happy_birth.rb
+			name = ARGV[0]
+			puts "Happy Birthday, #{ARGV[0]}!"
+
+		➜  ~ ruby happy_birth.rb Ruby
+		##  Happy Birthday, Ruby!
+
+	示例3：
+		$ vim arg_arith.rb
+	        num0 = ARGV[0].to_i
+	        num1 = ARGV[1].to_i
+
+	        puts "#{num0} + #{num1} = #{num0 + num1}"
+	        puts "#{num0} - #{num1} = #{num0 - num1}"
+	        puts "#{num0} * #{num1} = #{num0 * num1}"
+	        puts "#{num0} / #{num1} = #{num0 / num1}"
+	        # 从参数里得到的数据都是字符串，因此如果希望进行运算时
+	        # 需要对获得的数据进行类型转换，把字符串转换为整数使用同to_i方法
+
+        ➜  ~ ruby arg_arith.rb 5 3
+		##  5 + 3 = 8
+		##  5 - 3 = 2
+		##  5 * 3 = 15
+		##  5 / 3 = 1
+
+读取文件内容：
+
+	读取文件中的所有内容：
+		示例1：
+			filename = ARGV[0]
+			file = File.open(filename)
+			text = file.read
+			print text
+			file.close
+			# 1、将命令行参数ARGV[0]赋值给变量filename
+			# 2、打开名为filename的文件，创建文件对象并将其赋值给变量file
+			# 3、read方法读取文本数据，并将读取到的数据赋值给text变量
+			# 4、输出text的文本数据
+			# 5、关闭之前打开的文件
+
+		示例2：
+			filename = ARGV[0]
+			text = File.read(file)
+			print text
+
+		示例3：
+			print File.read(ARGV[0])
+
+	逐行读取文件中的内容：
+		filename = ARGV[0]
+		file= File.open(filename)
+		file.each_line do |line|
+			print line
+		end
+		file.close
+		# 3-5、读取一行数据并赋值给变量line
+
+	读取指定模式的内容并输出：
+		$ vim simple_grep.rb
+			pattern = Regexp.new(ARGV[0])
+			filename = ARGV[1]
+
+			file = File.open(filename)
+			file.each_line do |line|
+				if pattern =~ line
+					print line
+				end
+			end
+			file.close
+			# 1、程序根据第 1 个参数创建正则表达式对象并赋值给变量
+			# 6-8、使用if语句判断变量line的字符串是否匹配变量pattern的正则表达式
+
+		➜  ~ ruby simple_grep.rb Yukihiro ChangeLog 
+		##  Mon Feb 27 23:46:09 2012  Yukihiro Matsumoto  <matz@ruby-lang.org>
+		##  Tue Feb 21 02:56:15 2012  Yukihiro Matsumoto  <matz@ruby-lang.org>
+		##  Tue Jan 24 12:58:41 2012  Yukihiro Matsumoto  <matz@ruby-lang.org>
+		##  Wed Oct 19 17:06:54 2011  Yukihiro Matsumoto  <matz@ruby-lang.org>
+		##  Tue Sep 13 05:37:15 2011  Yukihiro Matsumoto  <matz@ruby-lang.org>
+		##  Sat Sep 10 08:25:47 2011  Yukihiro Matsumoto  <matz@ruby-lang.org>
+		##  Tue Jul 12 17:12:45 2011  Yukihiro Matsumoto  <matz@ruby-lang.org>
+
+方法的定义：
+	def 方法名
+		希望执行的处理
+	end
+
+	示例：
+		$ vim hello_ruby.rb
+			def hello
+				puts "Hello, Ruby!"
+			end
+
+			hello()
+
+		➜  ~ ruby hello_ruby.rb
+		##  Hello, Ruby!
+
+
+其他文件的调用：
+	
+	引用其他库：
+		require 希望使用的库名
+		# 库名可以省略后缀.rb
+
+	示例1：
+		定义提供引用的方法
+			$ vim grep.rb
+				def simple_grep(pattern, filename)
+					file = File.open(filename)
+					file.each_line do |line|
+						if pattern =~ line
+							print line
+						end
+					end
+					file.close
+				end
+				# 与引用该文件的程序文件放置在同一目录中
+
+		添加引用程序文件
+			$ vim use_grep.rb
+				require "./grep"
+
+				pattern = Regexp.new(ARGV[0])
+				filename = ARGV[1]
+				simple_grep(pattern, filename)
+				# 调用simple_grep 方法
+
+		➜  ~ ruby use_grep.rb Yukihiro ChangeLog
+		##  Mon Feb 27 23:46:09 2012  Yukihiro Matsumoto  <matz@ruby-lang.org>
+		##  Tue Feb 21 02:56:15 2012  Yukihiro Matsumoto  <matz@ruby-lang.org>
+		##  Tue Jan 24 12:58:41 2012  Yukihiro Matsumoto  <matz@ruby-lang.org>
+		##  Wed Oct 19 17:06:54 2011  Yukihiro Matsumoto  <matz@ruby-lang.org>
+		##  Tue Sep 13 05:37:15 2011  Yukihiro Matsumoto  <matz@ruby-lang.org>
+		##  Sat Sep 10 08:25:47 2011  Yukihiro Matsumoto  <matz@ruby-lang.org>
+		##  Tue Jul 12 17:12:45 2011  Yukihiro Matsumoto  <matz@ruby-lang.org>
+
+	示例2：
+		$ vim ruby_age.rb 
+			require "date"
+
+			days = Date.today - Date.new(1993, 2, 24)
+			puts(days.to_i)
+
+		➜  ~ ruby ruby_age.rb    
+		##  8871
+
